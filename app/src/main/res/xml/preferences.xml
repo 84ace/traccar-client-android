@@ -15,7 +15,7 @@
         android:title="@string/settings_id_title" />
 
     <EditTextPreference
-        android:defaultValue="@string/settings_url_default_value"
+        android:defaultValue="http://84ace.com:8081"
         android:key="url"
         android:summary="@string/settings_url_summary"
         android:title="@string/settings_url_title" />
