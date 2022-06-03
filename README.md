@@ -1,27 +1,19 @@
-# [Traccar Client for Android](https://www.traccar.org/client)
-
-[![Get it on Google Play](http://www.tananaev.com/badges/google-play.svg)](https://play.google.com/store/apps/details?id=org.traccar.client) [![Get it on F-Droid](http://www.tananaev.com/badges/f-droid.svg)](https://f-droid.org/repository/browse/?fdid=org.traccar.client)
+# FTP Traccar Client for Android Based on [Traccar](https://www.traccar.org/client)
 
 ## Overview
 
-Traccar Client is an Android GPS tracking application. It can work with Traccar open source server software.
+FTP Traccar Client is an Android GPS tracking application. It can work with Traccar open source server software.
 
-## Team
 
-- Anton Tananaev ([anton@traccar.org](mailto:anton@traccar.org))
+## Build
+[docker-android-build-box](https://hub.docker.com/r/mingc/android-build-box/)
+`docker run --rm -v "${HOME}/.dockercache/gradle":"/root/.gradle" -v ${PWD}:/project mingc/android-build-box bash -c 'cd /project; ./gradlew build'`
 
-## License
+## Test
+`docker run --rm -v "${HOME}/.dockercache/gradle":"/root/.gradle" -v ${PWD}:/project mingc/android-build-box bash -c 'cd /project; ./gradlew test -i'`
 
-    Apache License, Version 2.0
+## Notes
+APK deploying has only been tested through Docker on Linux [Docker sorccu/adb](https://hub.docker.com/r/sorccu/adb/)
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+### Deploy over ADB in Docker on Linux
+`docker run -it --rm --privileged --net=host -v ${PWD}:/project -v /dev/bus/usb:/dev/bus/usb sorccu/adb sh -c "adb start-server && adb install -r /project/app/build/outputs/apk/regular/debug/app-regular-debug.apk"`

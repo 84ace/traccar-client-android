@@ -17,7 +17,9 @@ package org.traccar.client
 
 import android.content.Context
 import org.traccar.client.ProtocolFormatter.formatRequest
+import org.traccar.client.ProtocolFormatter.formatRequestIMSMonitor
 import org.traccar.client.RequestManager.sendRequestAsync
+import org.traccar.client.RequestManager.sendRequestIMSAsync
 import org.traccar.client.PositionProvider.PositionListener
 import org.traccar.client.NetworkManager.NetworkHandler
 import android.os.Handler
@@ -28,7 +30,6 @@ import org.traccar.client.DatabaseHelper.DatabaseHandler
 import org.traccar.client.RequestManager.RequestHandler
 
 class TrackingController(private val context: Context) : PositionListener, NetworkHandler {
-
     private val handler = Handler(Looper.getMainLooper())
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val positionProvider = PositionProviderFactory.create(context, this)
@@ -152,8 +153,10 @@ class TrackingController(private val context: Context) : PositionListener, Netwo
 
     private fun send(position: Position) {
         log("send", position)
-        val request = formatRequest(url, position)
-        sendRequestAsync(request, object : RequestHandler {
+        // val request = formatRequest(url, position)
+        val payload = formatRequestIMSMonitor(position, this.context)
+
+        sendRequestIMSAsync(url, payload, object : RequestHandler {
             override fun onComplete(success: Boolean) {
                 if (success) {
                     if (buffer) {

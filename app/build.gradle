@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId 'org.traccar.client'
         buildConfigField 'boolean', 'HIDDEN_APP', 'false'
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode 77
         versionName '6.16.1'
@@ -25,6 +25,7 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
+        abortOnError false
     }
 
     flavorDimensions 'default'
@@ -47,6 +48,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.cesarferreira:android-unique-device-id:1.0.2'
     implementation 'com.google.android.material:material:1.5.0-alpha05'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.preference:preference-ktx:1.1.1'

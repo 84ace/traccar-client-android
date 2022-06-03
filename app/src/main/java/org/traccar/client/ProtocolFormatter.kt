@@ -15,9 +15,86 @@
  */
 package org.traccar.client
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.telephony.TelephonyManager
+import android.view.View
 import android.net.Uri
+import android.provider.Settings.Secure
+import org.json.JSONObject
+import org.json.JSONArray
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
+import java.util.Locale
+import java.util.UUID
+import cesarferreira.androiduniquedeviceid.UniqueDeviceIdProvider
 
 object ProtocolFormatter {
+
+    fun formatDateToISO8601String(date: Date): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"))
+        return formatter.format(date)
+    }
+
+    fun getDeviceName(): String {
+        val manufacturer = android.os.Build.MANUFACTURER
+        val model = android.os.Build.MODEL
+        if (model.startsWith(manufacturer)) {
+            return model
+        }
+        return manufacturer + " " + model
+    }
+
+    fun getUDID(context: Context): String {
+        // Android ID resets between installs
+        // Some models do not return this
+        val androidID = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID)
+        if (androidID != null && androidID != "") {
+            return androidID
+        }
+
+        // Failing that use a uniquely generated key stored in the application between installs
+        val idProvider = UniqueDeviceIdProvider(context) 
+        return idProvider.getUniqueId()
+    }
+
+    fun formatRequestIMSMonitor(position: Position, context: Context): String {
+        // Compression zip and zlib 0
+        // JSON object matching IMS
+        val payload = JSONObject()
+        payload.put("type", "stats")
+
+        val udid = ProtocolFormatter.getUDID(context)
+        val metaData = JSONObject()
+        metaData.put("person_name", position.deviceId)
+        metaData.put("person_key", udid+"-person")
+        metaData.put("device_name", ProtocolFormatter.getDeviceName())
+        metaData.put("device_key", udid+"-device")
+        payload.put("metadata", metaData)
+
+        val locationStat = JSONObject()
+        val loc = JSONArray()
+        // [lon, lat]
+        loc.put(position.longitude)
+        loc.put(position.latitude)
+        locationStat.put("location", loc)
+
+        val timestamp = ProtocolFormatter.formatDateToISO8601String(position.time)
+        locationStat.put("timestamp", timestamp)
+        locationStat.put("speed", position.speed)
+        locationStat.put("altitude", position.altitude)
+
+        val stats = JSONObject()
+        val locationStats = JSONArray()
+        locationStats.put(locationStat)
+        stats.put("location_stats", locationStats)
+
+        payload.put("body", stats)
+
+        return payload.toString()
+    }
 
     fun formatRequest(url: String, position: Position, alarm: String? = null): String {
         val serverUrl = Uri.parse(url)

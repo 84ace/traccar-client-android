@@ -34,19 +34,4 @@
         </intent>
     </shortcut>
 
-    <shortcut
-        android:shortcutId="sos"
-        android:enabled="true"
-        android:icon="@mipmap/ic_sos"
-        android:shortcutShortLabel="@string/shortcut_sos">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetPackage="org.traccar.client"
-            android:targetClass="org.traccar.client.ShortcutActivity">
-            <extra
-                android:name="action"
-                android:value="sos" />
-        </intent>
-    </shortcut>
-
 </shortcuts>
