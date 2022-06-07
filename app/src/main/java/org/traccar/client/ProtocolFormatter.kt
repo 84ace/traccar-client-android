@@ -48,14 +48,6 @@ object ProtocolFormatter {
     }
 
     fun getUDID(context: Context): String {
-        // Android ID resets between installs
-        // Some models do not return this
-        // val androidID = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID)
-        // if (androidID != null && androidID != "") {
-        //     return androidID
-        // }
-
-        // Failing that use a uniquely generated key stored in the application between installs
         val idProvider = UniqueDeviceIdProvider(context) 
         return idProvider.getUniqueId()
     }
