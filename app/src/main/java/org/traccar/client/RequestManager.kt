@@ -55,16 +55,14 @@ object RequestManager {
     fun sendRequestIMS(uri: String, payload: String): Boolean {
         val compressed = compress(payload)
 
-        var modifiedURI = uri
-        var scheme = "http://"
-        if (!uri.startsWith(scheme)) {
-            modifiedURI = scheme + uri
+        var url: URL
+        try {
+            url = URL(uri)
+        } 
+        catch (e: Exception) {
+            url = URL("http://"+uri)
         }
-        var scheme = "https://"
-        if (!uri.startsWith(scheme)) {
-            modifiedURI = scheme + uri
-        }
-        val url = URL(modifiedURI)
+
         val host = url.getHost()
         val port = url.getPort()
 

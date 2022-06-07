@@ -26,6 +26,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.net.Uri
+import java.net.URL
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -298,14 +299,18 @@ class MainFragment : PreferenceFragmentCompat(), OnSharedPreferenceChangeListene
     }
 
     private fun validateServerURL(userUrl: String): Boolean {
-        val port = Uri.parse(userUrl).port
-        if (
-            URLUtil.isValidUrl(userUrl) &&
-            (port == -1 || port in 1..65535) &&
-            (URLUtil.isHttpUrl(userUrl) || URLUtil.isHttpsUrl(userUrl))
-        ) {
+        var url: URL
+        try {
+            url = URL(userUrl)
+        } 
+        catch (e: Exception) {
+            Log.w(TAG, "invalid URL adding http")
+            url = URL("http://"+userUrl)
+        }
+        if (url.getPort() in 1..65535) {
             return true
         }
+        Log.w(TAG, url.toString())
         Toast.makeText(activity, R.string.error_msg_invalid_url, Toast.LENGTH_LONG).show()
         return false
     }
