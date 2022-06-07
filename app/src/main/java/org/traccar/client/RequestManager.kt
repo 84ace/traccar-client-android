@@ -64,7 +64,13 @@ object RequestManager {
         val host = url.getHost()
         val port = url.getPort()
 
-        val socket = Socket(host, port)
+        var socket: Socket
+        try {
+            socket = Socket(host, port)
+        }
+        catch (e: Exception) {
+            return false
+        }
         try {
         val dataInputStream = DataInputStream(socket.getInputStream())
         val dataOutputStream = DataOutputStream(socket.getOutputStream())
