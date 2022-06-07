@@ -60,6 +60,10 @@ object RequestManager {
         if (!uri.startsWith(scheme)) {
             modifiedURI = scheme + uri
         }
+        var scheme = "https://"
+        if (!uri.startsWith(scheme)) {
+            modifiedURI = scheme + uri
+        }
         val url = URL(modifiedURI)
         val host = url.getHost()
         val port = url.getPort()
