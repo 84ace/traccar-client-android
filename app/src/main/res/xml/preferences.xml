@@ -12,6 +12,7 @@
 
     <EditTextPreference
         android:key="id"
+        android:summary="@string/settings_name_summary"
         android:title="@string/settings_id_title" />
 
     <EditTextPreference
